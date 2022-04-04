@@ -6,8 +6,11 @@ image = cv2.imread("sudoku2.jpeg")
 cv2.imshow("Image", image)
 
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+cv2.imshow("Image", gray)
 blur = cv2.GaussianBlur(gray, (5, 5), 0)
+cv2.imshow("Image", blur)
 thresh = cv2.adaptiveThreshold(blur, 255, 1, 1, 11, 2)
+cv2.imshow("Image", thresh)
 contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
 max_area = 0
@@ -65,7 +68,7 @@ for i in range(9):
         i_err = 6
     for j in range(9):
         sudoku[i][j] = imgWarped[0 + i * step + i_err: (i + 1) * step, 0 + j * step + i_err: (j + 1) * step]
-        # cv2.imshow(f"cell {i+1} {j+1}", imgWarped[0 + i*step + i_err: (i+1)*step, 0 + j*step + i_err: (j+1)*step])
+        cv2.imshow(f"cell {i+1} {j+1}", imgWarped[0 + i*step + i_err: (i+1)*step, 0 + j*step + i_err: (j+1)*step])
 
 
 # TENSORFLOW
