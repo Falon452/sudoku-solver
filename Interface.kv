@@ -1,0 +1,167 @@
+<ImageScreen>:
+
+    img1:image_to_solve
+
+    FloatLayout:
+        canvas:
+            Color:
+                rgb: 0.93, 0.96, 0.97
+
+            Rectangle:
+                size: self.size
+
+        BoxLayout:
+            canvas:
+                Color:
+                    rgb: 0.51, 0.77, 0.74
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+
+            orientation: 'horizontal'
+            padding: 10
+            spacing: 10
+            size_hint: 1, None
+            pos_hint: {'top': 1}
+            height: 100
+
+            Label:
+                text_size: self.width, None
+                text: 'Sudoku solver'
+                font_size: '30dp'
+
+            Button:
+                text: 'Upload image'
+                background_color: 0, 0.43, 0.47
+                background_normal: ''
+                size_hint: 0.5, 0.7
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                on_press: root.upload()
+
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 10
+            spacing: 10
+            size_hint: 1, 0.8
+            pos_hint: {'top': 0.8}
+
+
+            Image:
+                id: image_to_solve
+                source: 'sudoku_images/before.jpg'
+                size_hint: 0.6, 0.6
+                pos_hint: {'center_x':0.5}
+
+            Button:
+                text: 'Solve'
+                background_color: 0.89, 0.59, 0.47
+                background_normal: ''
+                size_hint: 0.3, 0.1
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                on_press: root.solve()
+
+
+<StartScreen>:
+    FloatLayout:
+        canvas:
+            Color:
+                rgb: 0.93, 0.96, 0.97
+
+            Rectangle:
+                size: self.size
+
+        BoxLayout:
+            canvas:
+                Color:
+                    rgb: 0.51, 0.77, 0.74
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+
+            orientation: 'horizontal'
+            padding: 10
+            spacing: 10
+            size_hint: 1, None
+            pos_hint: {'top': 1}
+            height: 100
+
+            Label:
+                text_size: self.width, None
+                text: 'Sudoku solver'
+                font_size: '30dp'
+
+            Button:
+                text: 'Upload image'
+                background_color: 0, 0.43, 0.47
+                background_normal: ''
+                size_hint: 0.5, 0.7
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                on_press: root.upload()
+
+        BoxLayout:
+            padding: 10
+            size_hint: 1, 0.8
+            pos_hint: {'top': 0.8}
+
+
+            Label:
+                color: 0, 0.43, 0.47
+                text_size: self.width, None
+                text: 'Hello! Welcome in our sudoku solver app :) \nJust upload your sudoku image and our solver will help you!'
+                font_size: '20dp'
+                halign: 'center'
+                pos_hint: {'center_y': 0.7}
+
+
+
+<SolvedScreen>:
+
+    FloatLayout:
+        canvas:
+            Color:
+                rgb: 0.93, 0.96, 0.97
+
+            Rectangle:
+                size: self.size
+
+        BoxLayout:
+            canvas:
+                Color:
+                    rgb: 0.51, 0.77, 0.74
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+
+            orientation: 'horizontal'
+            padding: 10
+            spacing: 10
+            size_hint: 1, None
+            pos_hint: {'top': 1}
+            height: 100
+
+            Label:
+                text_size: self.width, None
+                text: 'Sudoku solver'
+                font_size: '30dp'
+
+            Button:
+                text: 'Upload image'
+                background_color: 0, 0.43, 0.47
+                background_normal: ''
+                size_hint: 0.5, 0.7
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                on_press: root.upload()
+
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 10
+            spacing: 10
+            size_hint: 1, 0.8
+            pos_hint: {'top': 0.8}
+
+
+            Image:
+                id: solved_image
+                source: 'sudoku_images/after.jpg'
+                size_hint: 0.6, 0.6
+                pos_hint: {'center_x':0.5}
