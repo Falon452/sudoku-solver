@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from minizinc import Instance, Model, Solver
+import fastbook
 
 image = cv2.imread("sudoku2.jpeg")
 cv2.imshow("Image", image)
@@ -17,7 +18,7 @@ max_area = 0
 c = 0
 for i in contours:
     area = cv2.contourArea(i)
-    if area > 1000:
+    if area > 10000:
         if area > max_area:
             max_area = area
             best_cnt = i
@@ -61,14 +62,15 @@ step = width // 9
 sudoku = [[None for _ in range(9)] for _ in range(9)]
 
 for i in range(9):
-    i_err = 3
+    basic_err = 5
+    i_err = basic_err
     if i > 2:
-        i_err = 4
-    if i > 5:
         i_err = 6
+    if i > 5:
+        i_err = 7
     for j in range(9):
-        sudoku[i][j] = imgWarped[0 + i * step + i_err: (i + 1) * step, 0 + j * step + i_err: (j + 1) * step]
-        cv2.imshow(f"cell {i+1} {j+1}", imgWarped[0 + i*step + i_err: (i+1)*step, 0 + j*step + i_err: (j+1)*step])
+        sudoku[i][j] = imgWarped[0 + i * step + i_err: (i + 1)*step+i_err-2*basic_err, 0 + j * step + i_err: (j + 1)*step+i_err-2*basic_err]
+        # cv2.imshow(f"cell {i+1} {j+1}", imgWarped[0 + i*step + i_err: (i+1)*step, 0 + j*step + i_err: (j+1)*step])
 
 
 # TENSORFLOW
