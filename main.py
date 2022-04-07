@@ -1,7 +1,10 @@
+import pathlib
+
 import cv2
 import numpy as np
+from fastai.learner import load_learner
 from minizinc import Instance, Model, Solver
-import fastbook
+from fastbook import *
 
 image = cv2.imread("sudoku2.jpeg")
 cv2.imshow("Image", image)
@@ -74,8 +77,23 @@ for i in range(9):
 
 
 # TENSORFLOW
+path = Path()
 
+pathlib.PosixPath = pathlib.WindowsPath
 
+learn_inf = load_learner(path/'sudoku_neural_network.pkl')
+
+results = [[0 for _ in range(9)] for _ in range(9)]
+
+for i in range(9):
+    for j in range(9):
+        pred, _, probs = learn_inf.predict(sudoku[i][j])
+        pred = int(pred)
+        results[i][j] = pred
+        if probs[pred].item() < 0.80:
+            results[i][j] = 0
+
+print(results)
 
 # MINIZINC
 
