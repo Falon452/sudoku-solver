@@ -2,21 +2,21 @@ import pathlib
 
 import cv2
 import numpy as np
-from fastai.learner import load_learner
+# from fastai.learner import load_learner
 from minizinc import Instance, Model, Solver
 from fastbook import *
+import time
 
 
-def main():
-    image = cv2.imread("sudoku.jpg")
-    cv2.imshow("Image", image)
+def main(path):
+    image = cv2.imread(path)
 
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    cv2.imshow("Image", gray)
+    # cv2.imshow("Image", gray)
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
-    cv2.imshow("Image", blur)
+    # cv2.imshow("Image", blur)
     thresh = cv2.adaptiveThreshold(blur, 255, 1, 1, 11, 2)
-    cv2.imshow("Image", thresh)
+    # cv2.imshow("Image", thresh)
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     max_area = 0
@@ -41,10 +41,12 @@ def main():
     imgWarped = cv2.warpPerspective(image, matrix, (width, height))
     imgWarped = ~imgWarped  # invert colors
     results = get_sudoku_tiles(imgWarped, width)
-    # solve(results, width, height)
+    solve(results, width, height)
 
 
 def solve(results, width, height):
+    for i in results:
+        print(i)
     sudoku_solver = Model("./sudoku-solver.mzn")
     gecode = Solver.lookup("gecode")
     instance = Instance(gecode, sudoku_solver)
@@ -103,6 +105,7 @@ def get_corners(best_cnt):
 
     return right_upper, left_lower, right_lower, left_upper
 
+
 def get_sudoku_tiles(img, width):
     step = width // 9
     sudoku = [[None for _ in range(9)] for _ in range(9)]
@@ -117,12 +120,10 @@ def get_sudoku_tiles(img, width):
         for j in range(9):
             sudoku[i][j] = img[0 + i * step + i_err: (i + 1) * step + i_err - 2 * basic_err,
                            0 + j * step + i_err: (j + 1) * step + i_err - 2 * basic_err]
-            cv2.imshow(f"cell {i + 1} {j + 1}",
-                       img[0 + i * step + i_err: (i + 1) * step, 0 + j * step + i_err: (j + 1) * step])
 
     path = Path()
 
-    pathlib.PosixPath = pathlib.WindowsPath
+    # pathlib.PosixPath = pathlib.WindowsPath
 
     learn_inf = load_learner(path / 'nn_blank_images.pkl')
 
@@ -137,4 +138,5 @@ def get_sudoku_tiles(img, width):
     return results
 
 
-main()
+if __name__ == '__main__':
+    main()
