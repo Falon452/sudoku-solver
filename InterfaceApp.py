@@ -4,6 +4,7 @@ from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
 import cv2
 import numpy as np
+from random import randint
 from minizinc import Instance, Model, Solver
 from fastbook import *
 kivy.require('1.9.1')
@@ -41,7 +42,8 @@ def solver(path):
     results = get_sudoku_tiles(transformed_image, width)
 
     sudoku_solved = solve(results, width, height)
-    filename = 'sudoku_solved.png'
+    i = randint(1, 100)
+    filename = f'sudoku_solved{i}.png'
     cv2.imwrite(filename, sudoku_solved)
     return filename
 
