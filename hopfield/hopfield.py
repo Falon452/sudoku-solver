@@ -48,8 +48,6 @@ def xi_to_PIL(xi, N):
 
 
 def noise_image(file, percent):
-    print(file)
-
     img = Image.open(file).convert('L')
     img = np.array(img)
     w, h = img.shape
@@ -68,7 +66,6 @@ def noise_image(file, percent):
 
 def get_train_images_as_reference():
     for file in glob.glob(TRAIN_PATH):
-        print(file)
         img_test = images2xi([file], N)
         network.set_initial_neurons_state(np.copy(img_test[:, 0]))
         network.update_neurons(iterations, 'sync')
@@ -100,19 +97,30 @@ def predict(res_pil):
     lowest_name = lowest_name.split("\\")[1]
     lowest_name = lowest_name.split(".png")[0]
     lowest_name = lowest_name.split("_")[0]
-    print(f"Predykcja -> {lowest_name.capitalize()} z mse={lowest_mse}")
-    return mses
+    print(f"Predykcja -> {lowest_name.capitalize()} z mse = {lowest_mse}")
+    return lowest_name
 
 
-def mse_img(img1, img2):
-    img1, img2 = np.array(img1), np.array(img2)
-    sum = 0
-    w, h = img1.shape[:2]
+def mse_img(img_true, img_pred):
+    img_true, img_pred = np.array(img_true), np.array(img_pred)
+    w, h = img_pred.shape[:2]
+    values0 = 0
     for x in range(w):
         for y in range(h):
-            diff = img1[x, y] - img2[x, y]
-            sum += diff
-    return sum / (w * h)
+            if img_pred[x][y] == 0:
+                values0 += 1
+
+    if values0 > w*h*0.60:
+        img_pred = 255 - img_pred
+        print('swapping colors')
+
+    res = 0
+
+    for x in range(w):
+        for y in range(h):
+            diff = np.square(img_true[x, y] - img_pred[x, y])
+            res += diff
+    return res / (w * h)
 
 
 if __name__ == '__main__':
@@ -130,11 +138,12 @@ if __name__ == '__main__':
     network.train_pattern(target)
     network.save_network("./hopefield_network.npz")
 
-
     print("TESTING")
     network.load_network("./hopefield_network.npz")
+
+    correct = 0
+    no_files = 0
     for file in glob.glob(TEST_PATH):
-        print(file)
         img_test = images2xi([file], N)
         network.set_initial_neurons_state(np.copy(img_test[:, 0]))
         network.update_neurons(iterations, 'async')
@@ -142,6 +151,16 @@ if __name__ == '__main__':
         test_pil = xi_to_PIL(img_test[:, 0], N)
         res_pil = xi_to_PIL(network.S, N)
 
-        predict(res_pil)
+        true_class = file.split(".png")[0]
+        true_class = true_class.split("\\")[1]
+        true_class = true_class.split("_")[0]
 
-        show_images([test_pil, res_pil])
+        prediction_class = predict(res_pil)
+        print(f"Prawdziwa: {true_class}, predykcja: {prediction_class}")
+        if true_class == prediction_class:
+            correct += 1
+
+        # show_images([test_pil, res_pil])
+        no_files += 1
+
+    print(f"class predicted correctly: {correct/no_files * 100}")
